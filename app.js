@@ -1,119 +1,66 @@
-const API_BASE = "https://bank-backend-hm3q.onrender.com"; // <<=== CAMBIA QUI
+const API_URL = "https://TUO-BACKEND.onrender.com";
 
-let inbox = [];
-let history = [];
-let lastFetchTime = 0;
-let playerProgress = 0; // cambia questo valore quando il giocatore avanza
-let openedMailId = null;
+const mails = {};
+let currentMail = null;
 
-// aggiorna badge notifiche
-function updateNotificationBadge() {
-  const unreadCount = inbox.filter(m => !m.read).length;
-  document.getElementById("notifyBadge").innerText = unreadCount;
-}
+// CHAT
+document.getElementById("send-btn").onclick = async () => {
+    const input = document.getElementById("chat-input");
+    if (!input.value) return;
 
-// render inbox
-function renderInbox() {
-  const container = document.getElementById("inboxList");
-  container.innerHTML = "";
-  inbox.forEach(mail => {
-    const div = document.createElement("div");
-    div.className = "mailItem";
-    div.innerText = mail.subject + (mail.read ? " (letto)" : "");
-    div.onclick = () => openMail(mail.id);
-    container.appendChild(div);
-  });
-}
+    addMsg(input.value, "user");
+    const res = await fetch(API_URL + "/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input.value })
+    });
 
-// render history
-function renderHistory() {
-  const container = document.getElementById("historyList");
-  container.innerHTML = "";
-  history.forEach(mail => {
-    const div = document.createElement("div");
-    div.className = "mailItem";
-    div.innerText = mail.subject;
-    container.appendChild(div);
-  });
-}
-
-// fetch inbox
-async function fetchInbox() {
-  const res = await fetch(`${API_BASE}/mail/inbox`);
-  inbox = await res.json();
-  renderInbox();
-  updateNotificationBadge();
-}
-
-// fetch history
-async function fetchHistory() {
-  const res = await fetch(`${API_BASE}/mail/history`);
-  history = await res.json();
-  renderHistory();
-}
-
-// open mail
-async function openMail(id) {
-  const res = await fetch(`${API_BASE}/mail/open/${id}`, { method: "POST" });
-  const mail = await res.json();
-
-  openedMailId = id;
-
-  document.getElementById("mailView").innerHTML = `
-    <h3>${mail.subject}</h3>
-    <p>${mail.body}</p>
-  `;
-
-  document.getElementById("archiveBtn").style.display = "block";
-
-  inbox = inbox.map(m => m.id === id ? { ...m, read: true } : m);
-  updateNotificationBadge();
-  renderInbox();
-}
-
-// archive mail
-async function archiveMail() {
-  if (!openedMailId) return;
-  await fetch(`${API_BASE}/mail/archive/${openedMailId}`, { method: "POST" });
-
-  inbox = inbox.filter(m => m.id !== openedMailId);
-  openedMailId = null;
-
-  document.getElementById("mailView").innerHTML = "Apri una mail per leggerla.";
-  document.getElementById("archiveBtn").style.display = "none";
-
-  fetchInbox();
-  fetchHistory();
-}
-
-// genera mail automaticamente con ritardo proporzionale al progresso
-async function checkForNewMail() {
-  const res = await fetch(`${API_BASE}/mail/generate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      progress: playerProgress,
-      last_time: lastFetchTime
-    })
-  });
-
-  const data = await res.json();
-
-  if (data.status === "new") {
-    inbox.push(data.mail);
-    updateNotificationBadge();
-    renderInbox();
-    lastFetchTime = Date.now() / 1000;
-  }
-
-  setTimeout(checkForNewMail, data.next_interval * 1000);
-}
-
-// inizializza
-window.onload = () => {
-  document.getElementById("archiveBtn").onclick = archiveMail;
-  fetchInbox();
-  fetchHistory();
-  checkForNewMail();
+    const data = await res.json();
+    addMsg(data.reply, "robot");
+    input.value = "";
 };
 
+function addMsg(text, cls) {
+    const div = document.createElement("div");
+    div.className = "msg " + cls;
+    div.textContent = text;
+    document.getElementById("chat-body").appendChild(div);
+}
+
+// MAIL DINAMICHE
+async function fetchNewMail() {
+    const res = await fetch(API_URL + "/new-mail");
+    const mail = await res.json();
+
+    const id = Date.now();
+    mails[id] = mail;
+
+    const li = document.createElement("li");
+    li.className = "mail new";
+    li.textContent = mail.title;
+    li.onclick = () => openMail(id);
+
+    document.getElementById("mailList").appendChild(li);
+}
+
+function openMail(id) {
+    currentMail = id;
+    document.getElementById("docProtocol").textContent = mails[id].title;
+    document.getElementById("docBody").innerHTML = mails[id].body;
+    document.querySelector(".actions").style.display = "grid";
+}
+
+// AZIONI
+document.querySelector(".approve").onclick = () => closeMail("APPROVATA");
+document.querySelector(".archive").onclick = () => closeMail("ARCHIVIATA");
+document.querySelector(".report").onclick = () => closeMail("SEGNALATA");
+
+function closeMail(action) {
+    const li = document.createElement("li");
+    li.textContent = `${mails[currentMail].title} — ${action}`;
+    document.getElementById("historyList").appendChild(li);
+    document.querySelector(".actions").style.display = "none";
+}
+
+// NUOVE MAIL AUTOMATICHE
+setInterval(fetchNewMail, 30000);
