@@ -125,7 +125,7 @@ body {
     flex: 1;
     overflow-y: auto;
     font-size: 13px;
-    max-height: 320px; /* SOLO QUI: chat scrollabile */
+    max-height: 320px;
 }
 
 .msg {
@@ -150,12 +150,30 @@ body {
     margin-top: 6px;
 }
 
-.chat-input input {
+.chat-input textarea {
     flex: 1;
     background: #000;
     border: 1px solid var(--border);
     color: var(--text);
     padding: 6px;
+    resize: none;
+    overflow: hidden;
+    font-family: "Courier New", monospace;
+}
+
+.chat-input textarea:focus {
+    outline: none;
+}
+
+.image-slot {
+    margin-top: 8px;
+    border: 1px dashed var(--border);
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+    font-size: 12px;
 }
 
 .actions {
