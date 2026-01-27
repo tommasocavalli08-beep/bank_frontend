@@ -1,4 +1,4 @@
-const API_URL = "https://TUO-BACKEND.onrender.com";
+const API_URL = "https://bank-backend-hm3q.onrender.com";
 
 const mails = {};
 let currentMail = null;
@@ -64,3 +64,4 @@ function closeMail(action) {
 
 // NUOVE MAIL AUTOMATICHE
 setInterval(fetchNewMail, 30000);
+
