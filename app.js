@@ -44,6 +44,14 @@ chatInput.addEventListener("input", () => {
     chatInput.style.height = chatInput.scrollHeight + "px";
 });
 
+// INVIO CON ENTER (Shift+Enter = newline)
+chatInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById("send-btn").click();
+    }
+});
+
 // =======================
 // INIZIALIZZA MAIL INIZIALI
 // =======================
@@ -181,20 +189,6 @@ async function startMailLoop() {
     }
 }
 
-const chatInput = document.getElementById("chat-input");
-chatInput.addEventListener("input", () => {
-    chatInput.style.height = "auto";
-    chatInput.style.height = chatInput.scrollHeight + "px";
-});
-
-chatInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        document.getElementById("send-btn").click();
-    }
-});
-
-
 // =======================
 // INIZIALIZZAZIONE
 // =======================
@@ -202,4 +196,3 @@ window.onload = () => {
     initInitialMails();
     startMailLoop();
 };
-
