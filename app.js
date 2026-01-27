@@ -83,12 +83,50 @@ function initInitialMails() {
 }
 
 // =======================
-// MAIL DINAMICHE
+// MAIL DINAMICHE (INFINITE)
 // =======================
 async function fetchNewMail() {
-    const res = await fetch(API_URL + "/new-mail");
-    const mail = await res.json();
-    addMailToInbox(mail.title, mail.body, true);
+    try {
+        const res = await fetch(API_URL + "/new-mail");
+        const mail = await res.json();
+
+        // se il backend si blocca, genera una mail locale
+        if (!mail || !mail.title || !mail.body) {
+            addMailToInbox(...generateLocalMail());
+        } else {
+            addMailToInbox(mail.title, mail.body, true);
+        }
+    } catch (e) {
+        addMailToInbox(...generateLocalMail());
+    }
+}
+
+function generateLocalMail() {
+    const cases = [
+        {
+            title: "Segnalazione sospetta — Cliente X",
+            body: "Cliente X presenta movimenti sospetti.\n\nControllare KYC e segnalare eventuali anomalie."
+        },
+        {
+            title: "Richiesta estensione fido — Cliente Y",
+            body: "Cliente Y richiede estensione fido.\n\nValutare rischio e capacità di rimborso."
+        },
+        {
+            title: "Verifica documenti — Cliente Z",
+            body: "Documenti mancanti per pratica Z.\n\nRichiedere integrazione e bloccare procedura."
+        },
+        {
+            title: "Controllo antiriciclaggio",
+            body: "Monitoraggio transazioni in corso.\n\nSe confermata anomalia, segnalare."
+        },
+        {
+            title: "Problema IT — Sistema offline",
+            body: "Il sistema di gestione mutui è offline.\n\nSegnalare al team IT e sospendere operazioni."
+        }
+    ];
+
+    const random = cases[Math.floor(Math.random() * cases.length)];
+    return [random.title, random.body];
 }
 
 function addMailToInbox(title, body, isNew) {
