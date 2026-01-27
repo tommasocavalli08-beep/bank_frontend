@@ -3,7 +3,6 @@ const API_URL = "https://bank-backend-hm3q.onrender.com";
 const mails = {};
 let currentMail = null;
 let playerProgress = 0; // 0-100 (più cresce, più lento arriva la posta)
-let mailTimer = null;
 
 // =======================
 // CHAT
@@ -13,6 +12,7 @@ document.getElementById("send-btn").onclick = async () => {
     if (!input.value) return;
 
     addMsg(input.value, "user");
+
     const res = await fetch(API_URL + "/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -29,7 +29,10 @@ function addMsg(text, cls) {
     div.className = "msg " + cls;
     div.textContent = text;
     document.getElementById("chat-body").appendChild(div);
-    document.getElementById("chat-body").scrollTop = document.getElementById("chat-body").scrollHeight;
+
+    // SCROLL SOLO DELLA CHAT
+    const chatBody = document.getElementById("chat-body");
+    chatBody.scrollTop = chatBody.scrollHeight;
 }
 
 // =======================
@@ -156,18 +159,17 @@ function updateBadge() {
 }
 
 // =======================
-// ARRIVO MAIL PROGRESSIVO
+// ARRIVO MAIL INFINITO
 // =======================
 function getMailDelay() {
     return 30000 * (1 + playerProgress / 100);
 }
 
-function scheduleNextMail() {
-    if (mailTimer) clearTimeout(mailTimer);
-    mailTimer = setTimeout(async () => {
+async function startMailLoop() {
+    while (true) {
         await fetchNewMail();
-        scheduleNextMail();
-    }, getMailDelay());
+        await new Promise(r => setTimeout(r, getMailDelay()));
+    }
 }
 
 // =======================
@@ -175,5 +177,5 @@ function scheduleNextMail() {
 // =======================
 window.onload = () => {
     initInitialMails();
-    scheduleNextMail();
+    startMailLoop();
 };
