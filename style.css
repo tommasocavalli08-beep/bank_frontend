@@ -125,6 +125,7 @@ body {
     flex: 1;
     overflow-y: auto;
     font-size: 13px;
+    max-height: 320px; /* SOLO QUI: chat scrollabile */
 }
 
 .msg {
