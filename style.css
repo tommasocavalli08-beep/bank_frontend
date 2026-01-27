@@ -1,0 +1,181 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #0f1116;
+    --panel: #161922;
+    --panel-soft: #1d2130;
+    --text: #d6d6d6;
+    --border: #2b2f3a;
+    --accent: #c93a3a;
+    --ok: #5fbf88;
+    --warn: #d6b15c;
+}
+
+body {
+    background: var(--bg);
+    font-family: "Courier New", monospace;
+    color: var(--text);
+    height: 100vh;
+}
+
+.terminal {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+}
+
+.topbar {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    padding: 10px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.main {
+    display: grid;
+    grid-template-columns: 280px 1fr 360px;
+    gap: 8px;
+    padding: 8px;
+}
+
+.mailbox {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 10px;
+}
+
+.mailbox ul {
+    list-style: none;
+    margin-bottom: 10px;
+}
+
+.mail {
+    padding: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    border-bottom: 1px dashed var(--border);
+}
+
+.mail.active {
+    background: #000;
+    font-weight: bold;
+}
+
+.mail.new::after {
+    content: " ●";
+    color: var(--accent);
+}
+
+.history li {
+    font-size: 12px;
+    opacity: 0.8;
+    padding: 4px;
+}
+
+.history .approve {
+    color: var(--ok);
+}
+
+.history .archive {
+    color: #aaa;
+}
+
+.history .report {
+    color: var(--accent);
+}
+
+.document {
+    background: var(--panel-soft);
+    border: 1px solid var(--border);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.doc-body {
+    flex: 1;
+    line-height: 1.5;
+}
+
+.right-panel {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 8px;
+}
+
+.stats,
+.chat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 10px;
+}
+
+.chat {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-body {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 13px;
+}
+
+.msg {
+    margin-bottom: 6px;
+    padding: 6px;
+    border-radius: 4px;
+}
+
+.msg.robot {
+    background: #202538;
+}
+
+.msg.user {
+    background: #2b314a;
+    text-align: right;
+    margin-left: auto;
+}
+
+.chat-input {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.chat-input input {
+    flex: 1;
+    background: #000;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px;
+}
+
+.actions {
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--border);
+}
+
+.actions.visible {
+    display: grid;
+}
+
+.actions button {
+    padding: 14px;
+    background: var(--panel);
+    border: none;
+    color: var(--text);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.actions button:hover {
+    background: #000;
+}
