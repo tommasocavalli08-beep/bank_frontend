@@ -9,19 +9,21 @@ let playerProgress = 0; // 0-100 (più cresce, più lento arriva la posta)
 // =======================
 document.getElementById("send-btn").onclick = async () => {
     const input = document.getElementById("chat-input");
-    if (!input.value) return;
+    if (!input.value.trim()) return;
 
-    addMsg(input.value, "user");
+    addMsg(input.value.trim(), "user");
 
     const res = await fetch(API_URL + "/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input.value })
+        body: JSON.stringify({ message: input.value.trim() })
     });
 
     const data = await res.json();
     addMsg(data.reply, "robot");
+
     input.value = "";
+    input.style.height = "auto";
 };
 
 function addMsg(text, cls) {
@@ -34,6 +36,13 @@ function addMsg(text, cls) {
     const chatBody = document.getElementById("chat-body");
     chatBody.scrollTop = chatBody.scrollHeight;
 }
+
+// auto-resize textarea (come WhatsApp)
+const chatInput = document.getElementById("chat-input");
+chatInput.addEventListener("input", () => {
+    chatInput.style.height = "auto";
+    chatInput.style.height = chatInput.scrollHeight + "px";
+});
 
 // =======================
 // INIZIALIZZA MAIL INIZIALI
