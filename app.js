@@ -33,25 +33,57 @@ function addMsg(text, cls) {
 }
 
 // =======================
+// INIZIALIZZA MAIL INIZIALI
+// =======================
+function initInitialMails() {
+    const initial = [
+        {
+            title: "BN-88421 — Esterno",
+            body: "Operatore,\n\nquesta comunicazione non segue i canali ufficiali.\nLa sua decisione influenzerà valutazioni future.\n\nCollaborare potrebbe risultare vantaggioso.",
+            isNew: false
+        },
+        {
+            title: "Mutuo — Rossi",
+            body: "Richiesta mutuo cliente Rossi.\n\nControllare documentazione e procedere con valutazione rischio.",
+            isNew: false
+        },
+        {
+            title: "Audit interno",
+            body: "Audit interno in corso.\n\nVerificare conformità procedure e report anomalie entro fine giornata.",
+            isNew: false
+        },
+        {
+            title: "Messaggio riservato",
+            body: "Messaggio riservato.\n\nAccesso limitato.\n\nProcedere con massima cautela.",
+            isNew: true
+        }
+    ];
+
+    initial.forEach(mail => addMailToInbox(mail.title, mail.body, mail.isNew));
+}
+
+// =======================
 // MAIL DINAMICHE
 // =======================
-
 async function fetchNewMail() {
     const res = await fetch(API_URL + "/new-mail");
     const mail = await res.json();
+    addMailToInbox(mail.title, mail.body, true);
+}
 
-    const id = Date.now();
+function addMailToInbox(title, body, isNew) {
+    const id = Date.now() + Math.random();
     mails[id] = {
         id,
-        title: mail.title,
-        body: mail.body,
-        status: "inbox",   // inbox | archived
-        read: false
+        title,
+        body,
+        status: "inbox",
+        read: !isNew
     };
 
     const li = document.createElement("li");
-    li.className = "mail new";
-    li.textContent = mail.title;
+    li.className = "mail" + (isNew ? " new" : "");
+    li.textContent = title;
     li.dataset.id = id;
     li.onclick = () => openMail(id);
 
@@ -63,19 +95,15 @@ async function fetchNewMail() {
 // =======================
 // APERTURA MAIL
 // =======================
-
 function openMail(id) {
     currentMail = id;
     const mail = mails[id];
 
-    // visualizza contenuto
     document.getElementById("docProtocol").textContent = mail.title;
     document.getElementById("docBody").innerHTML = mail.body;
 
-    // mostra bottoni azioni
     document.querySelector(".actions").classList.add("visible");
 
-    // segnalino notifica via (diventa letta)
     mail.read = true;
     const li = document.querySelector(`li[data-id="${id}"]`);
     if (li) li.classList.remove("new");
@@ -84,9 +112,8 @@ function openMail(id) {
 }
 
 // =======================
-// AZIONI (APPROVA / ARCHIVIA / SEGNALA)
+// AZIONI
 // =======================
-
 document.querySelector(".approve").onclick = () => closeMail("APPROVATA");
 document.querySelector(".archive").onclick = () => closeMail("ARCHIVIATA");
 document.querySelector(".report").onclick = () => closeMail("SEGNALATA");
@@ -97,29 +124,23 @@ function closeMail(action) {
 
     mail.status = "archived";
 
-    // sposta nello storico
     const liHistory = document.createElement("li");
     liHistory.textContent = `${mail.title} — ${action}`;
     document.getElementById("historyList").appendChild(liHistory);
 
-    // rimuovi dalla inbox
     const liInbox = document.querySelector(`li[data-id="${currentMail}"]`);
     if (liInbox) liInbox.remove();
 
-    // nascondi azioni
     document.querySelector(".actions").classList.remove("visible");
-
     currentMail = null;
 
     updateBadge();
 }
 
 // =======================
-// NOTIFICA (badge)
+// NOTIFICA
 // =======================
-
 function updateBadge() {
-    // se non esiste, crealo nel titolo "Posta"
     let badge = document.getElementById("mailBadge");
     if (!badge) {
         const title = document.querySelector(".mailbox h2");
@@ -132,19 +153,12 @@ function updateBadge() {
 
     const unread = Object.values(mails).filter(m => m.status === "inbox" && !m.read).length;
     badge.textContent = unread > 0 ? `(${unread})` : "";
-
-    // se non ci sono mail nuove, togli il segnalino anche dalla lista
-    if (unread === 0) {
-        document.querySelectorAll(".mail.new").forEach(el => el.classList.remove("new"));
-    }
 }
 
 // =======================
 // ARRIVO MAIL PROGRESSIVO
 // =======================
-
 function getMailDelay() {
-    // più è alto il progresso, più lento arriva (proporzionale)
     return 30000 * (1 + playerProgress / 100);
 }
 
@@ -159,7 +173,7 @@ function scheduleNextMail() {
 // =======================
 // INIZIALIZZAZIONE
 // =======================
-
 window.onload = () => {
+    initInitialMails();
     scheduleNextMail();
 };
