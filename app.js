@@ -4,6 +4,8 @@ const mails = {};
 let currentMail = null;
 let playerProgress = 0; // 0-100 (più cresce, più lento arriva la posta)
 
+let bankFunds = 2450000; // fondo bancario iniziale
+
 // =======================
 // CHAT
 // =======================
@@ -63,8 +65,8 @@ function initInitialMails() {
             isNew: false
         },
         {
-            title: "Mutuo — Rossi",
-            body: "Richiesta mutuo cliente Rossi.\n\nControllare documentazione e procedere con valutazione rischio.",
+            title: "Mutuo — " + getRandomSurname(),
+            body: "Richiesta mutuo cliente " + getRandomSurname() + ".\n\nControllare documentazione e procedere con valutazione rischio.",
             isNew: false
         },
         {
@@ -90,10 +92,13 @@ async function fetchNewMail() {
         const res = await fetch(API_URL + "/new-mail");
         const mail = await res.json();
 
-        // se il backend si blocca, genera una mail locale
         if (!mail || !mail.title || !mail.body) {
             addMailToInbox(...generateLocalMail());
         } else {
+            // sostituisci eventuali placeholder [cognome cliente]
+            mail.title = replacePlaceholders(mail.title);
+            mail.body = replacePlaceholders(mail.body);
+
             addMailToInbox(mail.title, mail.body, true);
         }
     } catch (e) {
@@ -104,16 +109,16 @@ async function fetchNewMail() {
 function generateLocalMail() {
     const cases = [
         {
-            title: "Segnalazione sospetta — Cliente X",
-            body: "Cliente X presenta movimenti sospetti.\n\nControllare KYC e segnalare eventuali anomalie."
+            title: "Segnalazione sospetta — Cliente " + getRandomSurname(),
+            body: "Cliente " + getRandomSurname() + " presenta movimenti sospetti.\n\nControllare KYC e segnalare eventuali anomalie."
         },
         {
-            title: "Richiesta estensione fido — Cliente Y",
-            body: "Cliente Y richiede estensione fido.\n\nValutare rischio e capacità di rimborso."
+            title: "Richiesta estensione fido — Cliente " + getRandomSurname(),
+            body: "Cliente " + getRandomSurname() + " richiede estensione fido.\n\nValutare rischio e capacità di rimborso."
         },
         {
-            title: "Verifica documenti — Cliente Z",
-            body: "Documenti mancanti per pratica Z.\n\nRichiedere integrazione e bloccare procedura."
+            title: "Verifica documenti — Cliente " + getRandomSurname(),
+            body: "Documenti mancanti per pratica " + getRandomSurname() + ".\n\nRichiedere integrazione e bloccare procedura."
         },
         {
             title: "Controllo antiriciclaggio",
@@ -127,6 +132,19 @@ function generateLocalMail() {
 
     const random = cases[Math.floor(Math.random() * cases.length)];
     return [random.title, random.body];
+}
+
+function replacePlaceholders(text) {
+    return text.replace(/\[cognome cliente\]/gi, getRandomSurname());
+}
+
+function getRandomSurname() {
+    const surnames = [
+        "Rossi", "Bianchi", "Verdi", "Neri", "Ferrari",
+        "Russo", "Romano", "Gallo", "Costa", "Fontana",
+        "Marino", "Greco", "Bruno", "Moretti", "Barbieri"
+    ];
+    return surnames[Math.floor(Math.random() * surnames.length)];
 }
 
 function addMailToInbox(title, body, isNew) {
@@ -172,7 +190,11 @@ function openMail(id) {
 // =======================
 // AZIONI
 // =======================
-document.querySelector(".approve").onclick = () => closeMail("APPROVATA");
+document.querySelector(".approve").onclick = () => {
+    decreaseFundsForLoan();
+    closeMail("APPROVATA");
+};
+
 document.querySelector(".archive").onclick = () => closeMail("ARCHIVIATA");
 document.querySelector(".report").onclick = () => closeMail("SEGNALATA");
 
@@ -193,6 +215,26 @@ function closeMail(action) {
     currentMail = null;
 
     updateBadge();
+}
+
+// =======================
+// FONDI BANCARI
+// =======================
+function updateBankFunds() {
+    document.getElementById("bankFunds").textContent = "€ " + bankFunds.toLocaleString("it-IT");
+}
+
+function decreaseFundsForLoan() {
+    const mail = mails[currentMail];
+    if (!mail) return;
+
+    // Se la mail è un prestito/mutuo, diminuisci fondi
+    if (mail.title.toLowerCase().includes("mutuo") || mail.title.toLowerCase().includes("prestito")) {
+        const amount = 150000; // valore fisso (puoi cambiare)
+        bankFunds -= amount;
+        if (bankFunds < 0) bankFunds = 0;
+        updateBankFunds();
+    }
 }
 
 // =======================
@@ -232,5 +274,6 @@ async function startMailLoop() {
 // =======================
 window.onload = () => {
     initInitialMails();
+    updateBankFunds();
     startMailLoop();
 };
