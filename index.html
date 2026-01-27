@@ -1,38 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bank Game</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Terminale Operatore — Banca</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <header>
-    <h1>Bank Game</h1>
-    <div id="notification">
-      <span>Inbox</span>
-      <span id="notifyBadge">0</span>
+
+    <div class="terminal">
+
+        <header class="topbar">
+            <div class="logo">BANCA CENTRALE</div>
+            <div class="session">
+                Operatore: <strong>#0472</strong> • Stato: <span class="ok">ATTIVO</span>
+            </div>
+            <div class="clock" id="clock">14:32</div>
+        </header>
+
+        <div class="main">
+
+            <!-- MAILBOX -->
+            <aside class="mailbox">
+                <h2>Posta</h2>
+                <ul id="mailList">
+                    <li class="mail active" data-id="esterno">BN-88421 — Esterno</li>
+                    <li class="mail" data-id="mutuo">Mutuo — Rossi</li>
+                    <li class="mail" data-id="audit">Audit interno</li>
+                    <li class="mail new" data-id="riservato">Messaggio riservato</li>
+                </ul>
+
+                <hr>
+
+                <h2>Storico procedure</h2>
+                <ul id="historyList" class="history"></ul>
+            </aside>
+
+            <!-- DOCUMENTO -->
+            <section class="document">
+                <div class="doc-header">
+                    <span id="docProtocol">Protocollo BN-88421</span>
+                    <span class="alert">RISERVATO</span>
+                </div>
+
+                <div class="doc-body" id="docBody">
+                    Operatore,<br><br>
+                    questa comunicazione non segue i canali ufficiali.<br>
+                    La sua decisione influenzerà valutazioni future.<br><br>
+                    Collaborare potrebbe risultare vantaggioso.
+                </div>
+
+                <div class="doc-footer" id="docFooter">
+                    Mittente: Contatto esterno<br>
+                    Data: 14/10/2031
+                </div>
+            </section>
+
+            <!-- DESTRA -->
+            <aside class="right-panel">
+
+                <div class="stats">
+                    <h3>Indicatori</h3>
+                    <p>Fondi banca: <strong id="bankFunds">€ 2.450.000</strong></p>
+                    <p>Rischio: <span class="warn" id="risk">MEDIO</span></p>
+                    <p>Attenzione IA: <span class="ok" id="ia">NORMALE</span></p>
+                </div>
+
+                <div class="chat">
+                    <div class="chat-header">Assistente interno</div>
+                    <div class="chat-body" id="chat-body">
+                        <div class="msg robot">Sistema operativo avviato.</div>
+                    </div>
+                    <div class="chat-input">
+                        <input id="chat-input" type="text" placeholder="Scrivi...">
+                        <button id="send-btn">Invia</button>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+
+        <!-- AZIONI -->
+        <footer class="actions">
+            <button class="approve">APPROVA</button>
+            <button class="archive">ARCHIVIA</button>
+            <button class="report">SEGNALA</button>
+            <footer class="actions" style="display:none">
+        </footer>
+
     </div>
-  </header>
 
-  <main>
-    <section id="inboxSection">
-      <h2>Inbox</h2>
-      <div id="inboxList"></div>
-    </section>
-
-    <section id="mailViewSection">
-      <h2>Mail</h2>
-      <div id="mailView">Apri una mail per leggerla.</div>
-      <button id="archiveBtn" style="display:none;">Archivia</button>
-    </section>
-
-    <section id="historySection">
-      <h2>Storico</h2>
-      <div id="historyList"></div>
-    </section>
-  </main>
-
-  <script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
+
 </html>
