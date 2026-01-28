@@ -50,12 +50,20 @@ function addMsg(text, cls) {
 
 // ENTER PER INVIARE
 const chatInput = document.getElementById("chat-input");
-chatInput.addEventListener("keydown", e => {
+
+chatInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendChat();
+        e.preventDefault(); //  blocca il newline
+        sendChat();         //  invia messaggio
     }
 });
+
+// auto-resize stile WhatsApp
+chatInput.addEventListener("input", () => {
+    chatInput.style.height = "auto";
+    chatInput.style.height = chatInput.scrollHeight + "px";
+});
+
 
 // AUTO-RESIZE
 chatInput.addEventListener("input", () => {
@@ -169,3 +177,4 @@ async function startMailLoop() {
 // =======================
 window.onload = async () => {
     const res = await fetch(
+
