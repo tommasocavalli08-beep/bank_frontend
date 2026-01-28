@@ -10,14 +10,18 @@
 <div class="terminal">
 
     <header class="topbar">
-        <div class="logo">BANCA CENTRALE</div>
+        <div class="logo">
+            <img src="logo.png" alt="Logo Banca" class="logo-img">
+        </div>
         <div class="session">
             Operatore: <strong>#0472</strong> • Stato: <span class="ok">ATTIVO</span>
         </div>
-        <div class="clock">
-            <button id="endGameBtn" class="end-btn">FINE</button>
-        </div>
     </header>
+
+    <!-- Pulsante FINE centrato -->
+    <div class="end-container">
+        <button id="endGameBtn" class="end-btn">FINE</button>
+    </div>
 
     <div class="main">
         <aside class="mailbox">
@@ -34,7 +38,6 @@
             <div class="doc-header">
                 <span id="docProtocol">—</span>
             </div>
-
             <div class="doc-body" id="docBody">
                 Seleziona una mail per leggerne il contenuto.
             </div>
@@ -64,12 +67,12 @@
     </footer>
 </div>
 
-<!-- FINE GIOCO -->
+<!-- MODALE FINALE -->
 <div id="endGameModal" class="end-modal">
     <div class="end-content">
         <h2>Valutazione Operatore</h2>
         <div id="endStats"></div>
-        <button onclick="closeEnd()">Chiudi</button>
+        <button id="exitBtn">Esci</button>
     </div>
 </div>
 
