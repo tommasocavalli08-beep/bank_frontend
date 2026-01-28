@@ -6,6 +6,16 @@ let playerProgress = 0;
 let bankFund = 1000000;
 
 // =======================
+// FONDO BANCARIO (UI)
+// =======================
+function updateFundUI() {
+    const el = document.getElementById("bankFund");
+    if (el) {
+        el.textContent = bankFund.toLocaleString() + " €";
+    }
+}
+
+// =======================
 // CHAT
 // =======================
 document.getElementById("send-btn").onclick = sendChat;
@@ -18,8 +28,8 @@ async function sendChat() {
 
     const res = await fetch(API_URL + "/chat", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({message: input.value})
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input.value })
     });
 
     const data = await res.json();
@@ -47,7 +57,7 @@ chatInput.addEventListener("keydown", e => {
     }
 });
 
-// AUTO RESIZE
+// AUTO-RESIZE
 chatInput.addEventListener("input", () => {
     chatInput.style.height = "auto";
     chatInput.style.height = chatInput.scrollHeight + "px";
@@ -64,11 +74,17 @@ async function fetchNewMail() {
 
 function addMail(mail) {
     const id = Date.now() + Math.random();
-    mails[id] = {...mail, id, read: false};
+
+    mails[id] = {
+        ...mail,
+        id,
+        read: false
+    };
 
     const li = document.createElement("li");
-    li.textContent = mail.title;
     li.className = "mail new";
+    li.textContent = mail.title;
+    li.dataset.id = id;
     li.onclick = () => openMail(id);
 
     document.getElementById("mailList").appendChild(li);
@@ -84,16 +100,21 @@ function openMail(id) {
     document.querySelector(".actions").classList.add("visible");
 
     m.read = true;
+    document.querySelector(`li[data-id="${id}"]`)?.classList.remove("new");
+
     updateBadge();
 }
 
+// =======================
+// AZIONI MAIL
+// =======================
 async function closeMail(action) {
     const m = mails[currentMail];
     if (!m) return;
 
-    await fetch(API_URL + "/decision", {
+    const res = await fetch(API_URL + "/decision", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             type: m.type,
             amount: m.amount,
@@ -101,9 +122,23 @@ async function closeMail(action) {
         })
     });
 
-    document.querySelector(`.mail`).remove();
+    const data = await res.json();
+    bankFund = data.bank_fund;
+    updateFundUI();
+
+    // ➜ storico
+    const historyItem = document.createElement("li");
+    historyItem.textContent = `${m.title} — ${action}`;
+    document.getElementById("historyList").appendChild(historyItem);
+
+    // ➜ rimuovi inbox
+    document.querySelector(`li[data-id="${currentMail}"]`)?.remove();
+
     document.querySelector(".actions").classList.remove("visible");
+    delete mails[currentMail];
     currentMail = null;
+
+    updateBadge();
 }
 
 document.querySelector(".approve").onclick = () => closeMail("APPROVATA");
@@ -115,11 +150,12 @@ document.querySelector(".report").onclick = () => closeMail("SEGNALATA");
 // =======================
 function updateBadge() {
     const unread = Object.values(mails).filter(m => !m.read).length;
-    document.getElementById("mailBadge").textContent = unread ? `(${unread})` : "";
+    const badge = document.getElementById("mailBadge");
+    if (badge) badge.textContent = unread ? `(${unread})` : "";
 }
 
 // =======================
-// LOOP INFINITO
+// LOOP MAIL INFINITO
 // =======================
 async function startMailLoop() {
     while (true) {
@@ -128,4 +164,8 @@ async function startMailLoop() {
     }
 }
 
-window.onload = startMailLoop;
+// =======================
+// INIT
+// =======================
+window.onload = async () => {
+    const res = await fetch(
