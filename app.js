@@ -175,5 +175,6 @@ window.onload = async () => {
     bankFund = d.bank_fund;
     updateFundUI();
 
-    setInterval(fetchNewMail, 30000);
+    setInterval(fetchNewMail, 20000);
 };
+
