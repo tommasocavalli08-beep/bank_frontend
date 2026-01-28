@@ -2,44 +2,28 @@ const API_URL = "https://bank-backend-hm3q.onrender.com";
 
 const mails = {};
 let currentMail = null;
-let bankFund = 0;
-
-// statistiche
+let bankFund = 2450000; // iniziale
 let decisions = 0;
 let approvedLoans = 0;
 let reports = 0;
 let balanceDelta = 0;
 
-// =======================
-// FONDO
-// =======================
-function updateFundUI() {
-    document.getElementById("bankFunds").textContent =
-        "€ " + bankFund.toLocaleString();
-}
-
-// =======================
-// CHAT
-// =======================
+// ==================== CHAT ====================
 const chatInput = document.getElementById("chat-input");
 const chatBody = document.getElementById("chat-body");
-
 document.getElementById("send-btn").onclick = sendChat;
 
 function sendChat() {
     const text = chatInput.value.trim();
     if (!text) return;
-
     addMsg(text, "user");
-
     fetch(API_URL + "/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text })
     })
-        .then(r => r.json())
-        .then(d => addMsg(d.reply, "robot"));
-
+    .then(r => r.json())
+    .then(d => addMsg(d.reply, "robot"));
     chatInput.value = "";
     chatInput.style.height = "auto";
 }
@@ -64,9 +48,7 @@ chatInput.addEventListener("input", () => {
     chatInput.style.height = chatInput.scrollHeight + "px";
 });
 
-// =======================
-// MAIL
-// =======================
+// ==================== MAIL ====================
 async function fetchNewMail() {
     const r = await fetch(API_URL + "/new-mail");
     addMail(await r.json());
@@ -88,24 +70,19 @@ function addMail(mail) {
 function openMail(id) {
     currentMail = id;
     const m = mails[id];
-
     document.getElementById("docProtocol").textContent = m.title;
     document.getElementById("docBody").innerText = m.body;
     document.querySelector(".actions").classList.add("visible");
-
     m.read = true;
     document.querySelector(`li[data-id="${id}"]`)?.classList.remove("new");
 }
 
-// =======================
-// DECISIONI
-// =======================
+// ==================== DECISIONI ====================
 async function closeMail(action) {
     const m = mails[currentMail];
     if (!m) return;
 
     decisions++;
-
     let delta = 0;
     if (m.type === "loan" && action === "APPROVATA") {
         approvedLoans++;
@@ -116,65 +93,49 @@ async function closeMail(action) {
         delta = 20000;
     }
 
-    const r = await fetch(API_URL + "/decision", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            type: m.type,
-            amount: m.amount,
-            action
-        })
-    });
-
-    const data = await r.json();
-    bankFund = data.bank_fund;
     balanceDelta += delta;
+    bankFund += delta;
     updateFundUI();
 
     const li = document.createElement("li");
     li.textContent =
-        `${m.title} — ${action} | ${delta >= 0 ? "+" : ""}${delta.toLocaleString()} € | Fondo: ${bankFund.toLocaleString()} €`;
+        `${m.title} — ${action} | ${delta >=0 ? "+" : ""}${delta.toLocaleString()} € | Fondo: ${bankFund.toLocaleString()} €`;
     document.getElementById("historyList").appendChild(li);
 
     document.querySelector(`li[data-id="${currentMail}"]`)?.remove();
     delete mails[currentMail];
     currentMail = null;
-
     document.querySelector(".actions").classList.remove("visible");
+}
+
+function updateFundUI() {
+    document.getElementById("bankFunds").textContent = "€ " + bankFund.toLocaleString();
 }
 
 document.querySelector(".approve").onclick = () => closeMail("APPROVATA");
 document.querySelector(".archive").onclick = () => closeMail("ARCHIVIATA");
 document.querySelector(".report").onclick = () => closeMail("SEGNALATA");
 
-// =======================
-// FINE GIOCO
-// =======================
+// ==================== FINE GIOCO ====================
 document.getElementById("endGameBtn").onclick = () => {
-    document.getElementById("endGameModal").style.display = "flex";
-
+    const modal = document.getElementById("endGameModal");
+    modal.style.display = "flex";
     document.getElementById("endStats").innerHTML = `
         Decisioni prese: <strong>${decisions}</strong><br>
         Prestiti approvati: <strong>${approvedLoans}</strong><br>
-        Segnalazioni: <strong>${reports}</strong><br><br>
-        Bilancio finale: <strong>${balanceDelta >= 0 ? "+" : ""}${balanceDelta.toLocaleString()} €</strong><br>
+        Segnalazioni: <strong>${reports}</strong><br>
+        Bilancio finale: <strong>${balanceDelta >=0 ? "+" : ""}${balanceDelta.toLocaleString()} €</strong><br>
         Fondo finale: <strong>${bankFund.toLocaleString()} €</strong>
     `;
+    // Termina attività backend
+    fetch(API_URL + "/end-session", { method: "POST" });
 };
 
-function closeEnd() {
-    document.getElementById("endGameModal").style.display = "none";
-}
+// Esci forzato dal sito
+document.getElementById("exitBtn").onclick = () => window.location.href = "about:blank";
 
-// =======================
-// INIT
-// =======================
+// ==================== INIT ====================
 window.onload = async () => {
-    const r = await fetch(API_URL + "/status");
-    const d = await r.json();
-    bankFund = d.bank_fund;
     updateFundUI();
-
-    setInterval(fetchNewMail, 20000);
+    setInterval(fetchNewMail, 30000);
 };
-
