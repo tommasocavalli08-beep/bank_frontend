@@ -30,11 +30,16 @@ body {
 
 .topbar {
     display: grid;
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: auto 1fr;
     padding: 10px;
     background: var(--panel);
     border-bottom: 1px solid var(--border);
     font-size: 13px;
+    align-items: center;
+}
+
+.logo-img {
+    height: 24px;
 }
 
 .main {
@@ -44,140 +49,50 @@ body {
     padding: 8px;
 }
 
+/* Mailbox e storico */
 .mailbox {
     background: var(--panel);
     border: 1px solid var(--border);
     padding: 10px;
-}
-
-.mailbox ul {
-    list-style: none;
-    margin-bottom: 10px;
-}
-
-.mail {
-    padding: 6px;
-    font-size: 13px;
-    cursor: pointer;
-    border-bottom: 1px dashed var(--border);
-}
-
-.mail.active {
-    background: #000;
-    font-weight: bold;
-}
-
-.mail.new::after {
-    content: " ●";
-    color: var(--accent);
-}
-
-.history li {
-    font-size: 12px;
-    opacity: 0.8;
-    padding: 4px;
-}
-
-.history .approve {
-    color: var(--ok);
-}
-
-.history .archive {
-    color: #aaa;
-}
-
-.history .report {
-    color: var(--accent);
-}
-
-.document {
-    background: var(--panel-soft);
-    border: 1px solid var(--border);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-}
-
-.doc-body {
-    flex: 1;
-    line-height: 1.5;
-}
-
-.right-panel {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    gap: 8px;
-}
-
-.stats,
-.chat {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    padding: 10px;
-}
-
-.chat {
-    display: flex;
-    flex-direction: column;
-}
-
-.chat-body {
-    flex: 1;
     overflow-y: auto;
-    font-size: 13px;
 }
+.mailbox ul { list-style: none; margin-bottom: 10px; }
+.mail { padding: 6px; font-size: 13px; cursor: pointer; border-bottom: 1px dashed var(--border); }
+.mail.active { background: #000; font-weight: bold; }
+.mail.new::after { content: " ●"; color: var(--accent); }
 
-.msg {
-    margin-bottom: 6px;
-    padding: 6px;
-    border-radius: 4px;
-}
+.history li { font-size: 12px; opacity: 0.8; padding: 4px; }
+.history .approve { color: var(--ok); }
+.history .archive { color: #aaa; }
+.history .report { color: var(--accent); }
 
-.msg.robot {
-    background: #202538;
-}
+/* Documento */
+.document { background: var(--panel-soft); border: 1px solid var(--border); padding: 16px; display: flex; flex-direction: column; }
+.doc-body { flex: 1; line-height: 1.5; }
 
-.msg.user {
-    background: #2b314a;
-    text-align: right;
-    margin-left: auto;
-}
+/* Right panel */
+.right-panel { display: grid; grid-template-rows: auto 1fr; gap: 8px; }
+.stats, .chat { background: var(--panel); border: 1px solid var(--border); padding: 10px; }
+.chat { display: flex; flex-direction: column; }
+.chat-body { flex: 1; overflow-y: auto; font-size: 13px; }
+.msg { margin-bottom: 6px; padding: 6px; border-radius: 4px; }
+.msg.robot { background: #202538; }
+.msg.user { background: #2b314a; text-align: right; margin-left: auto; }
+.chat-input { display: flex; gap: 6px; margin-top: 6px; }
+.chat-input textarea { flex: 1; background: #000; border: 1px solid var(--border); color: var(--text); padding: 6px; resize: none; }
+.chat-input button { padding: 6px 12px; background: var(--accent); border: none; cursor: pointer; }
 
-.chat-input {
-    display: flex;
-    gap: 6px;
-    margin-top: 6px;
-}
+/* Azioni mail */
+.actions { display: none; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--border); }
+.actions.visible { display: grid; }
+.actions button { padding: 14px; background: var(--panel); border: none; color: var(--text); font-weight: bold; cursor: pointer; }
+.actions button:hover { background: #000; }
 
-.chat-input input,
-.chat-input textarea {
-    flex: 1;
-    background: #000;
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 6px;
-    resize: none;
-}
+/* Pulsante FINE centrato */
+.end-container { text-align: center; margin: 6px 0; }
+.end-btn { padding: 6px 14px; font-size: 13px; cursor: pointer; background: var(--accent); border: none; color: #000; border-radius: 4px; }
 
-.actions {
-    display: none;
-    grid-template-columns: repeat(3, 1fr);
-    border-top: 1px solid var(--border);
-}
-
-.actions.visible {
-    display: grid;
-}
-
-.actions button {
-    padding: 14px;
-    background: var(--panel);
-    border: none;
-    color: var(--text);
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.actions button:hover {
-    background: #000;
-}
+/* Modale finale sovrapposta */
+.end-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 999; }
+.end-content { background: var(--panel); border: 1px solid var(--border); padding: 20px; width: 450px; text-align: center; font-size: 13px; }
+.end-content button { margin-top: 14px; padding: 6px 10px; background: var(--accent); border: none; cursor: pointer; }
