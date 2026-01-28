@@ -1,3 +1,52 @@
+:root {
+    --bg: #0b0e11;
+    --panel: #11151a;
+    --border: #2a2f36;
+    --text: #d6d6d6;
+    --accent: #3fa9f5;
+    --danger: #d9534f;
+    --ok: #5cb85c;
+    --warn: #f0ad4e;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", monospace;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.terminal {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ================= TOP BAR ================= */
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    background: #0d1116;
+    font-size: 12px;
+}
+
+.logo {
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.session .ok {
+    color: var(--ok);
+}
+
 .end-btn {
     background: transparent;
     border: 1px solid var(--border);
@@ -11,6 +60,188 @@
 .end-btn:hover {
     opacity: 1;
 }
+
+/* ================= MAIN LAYOUT ================= */
+
+.main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 260px 1fr 320px;
+    overflow: hidden;
+}
+
+/* ================= MAILBOX ================= */
+
+.mailbox {
+    border-right: 1px solid var(--border);
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.mailbox h2 {
+    font-size: 12px;
+    margin: 6px 0;
+    color: var(--accent);
+}
+
+.mailbox ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mail {
+    padding: 6px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.mail:hover {
+    background: #161b22;
+}
+
+.mail.new::before {
+    content: "● ";
+    color: var(--accent);
+}
+
+.history li {
+    font-size: 11px;
+    opacity: 0.85;
+}
+
+/* ================= DOCUMENT ================= */
+
+.document {
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.doc-header {
+    font-size: 12px;
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.doc-body {
+    white-space: pre-wrap;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* ================= RIGHT PANEL ================= */
+
+.right-panel {
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+.stats {
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+}
+
+.stats h3 {
+    margin: 0 0 6px 0;
+    color: var(--accent);
+}
+
+/* ================= CHAT ================= */
+
+.chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    padding: 8px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--accent);
+}
+
+.chat-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    font-size: 12px;
+}
+
+.msg {
+    margin-bottom: 6px;
+}
+
+.msg.user {
+    color: var(--accent);
+}
+
+.msg.robot {
+    opacity: 0.9;
+}
+
+.chat-input {
+    display: flex;
+    border-top: 1px solid var(--border);
+}
+
+.chat-input textarea {
+    flex: 1;
+    background: #0d1116;
+    border: none;
+    color: var(--text);
+    padding: 8px;
+    resize: none;
+    outline: none;
+    font-size: 12px;
+}
+
+.chat-input button {
+    background: var(--accent);
+    border: none;
+    color: #000;
+    padding: 0 14px;
+    cursor: pointer;
+}
+
+/* ================= ACTIONS ================= */
+
+.actions {
+    display: none;
+    gap: 10px;
+    padding: 10px;
+    border-top: 1px solid var(--border);
+    background: #0d1116;
+}
+
+.actions.visible {
+    display: flex;
+}
+
+.actions button {
+    padding: 6px 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.approve {
+    background: var(--ok);
+}
+
+.archive {
+    background: var(--warn);
+}
+
+.report {
+    background: var(--danger);
+    color: #fff;
+}
+
+/* ================= END MODAL ================= */
 
 .end-modal {
     position: fixed;
@@ -28,4 +259,12 @@
     padding: 20px;
     width: 420px;
     font-size: 13px;
+}
+
+.end-content button {
+    margin-top: 14px;
+    padding: 6px 10px;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
 }
