@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
     <meta charset="UTF-8">
     <title>Terminale Operatore — Banca</title>
@@ -8,91 +7,72 @@
 </head>
 
 <body>
+<div class="terminal">
 
-    <div class="terminal">
-
-        <header class="topbar">
-            <div class="logo">BANCA CENTRALE</div>
-            <div class="session">
-                Operatore: <strong>#0472</strong> • Stato: <span class="ok">ATTIVO</span>
-            </div>
-            <div class="clock" id="clock">14:32</div>
-        </header>
-
-        <div class="main">
-
-            <!-- MAILBOX -->
-            <aside class="mailbox">
-                <h2>Posta</h2>
-                <ul id="mailList"></ul>
-
-                <hr>
-
-                <h2>Storico procedure</h2>
-                <ul id="historyList" class="history"></ul>
-            </aside>
-
-            <!-- DOCUMENTO -->
-            <section class="document">
-                <div class="doc-header">
-                    <span id="docProtocol">Protocollo BN-88421</span>
-                    <span class="alert">RISERVATO</span>
-                </div>
-
-                <div class="doc-body" id="docBody">
-                    Operatore,<br><br>
-                    questa comunicazione non segue i canali ufficiali.<br>
-                    La sua decisione influenzerà valutazioni future.<br><br>
-                    Collaborare potrebbe risultare vantaggioso.
-                </div>
-
-                <div class="doc-footer" id="docFooter">
-                    Mittente: Contatto esterno<br>
-                    Data: 14/10/2031
-                </div>
-            </section>
-
-            <!-- DESTRA -->
-            <aside class="right-panel">
-
-                <div class="stats">
-                    <h3>Indicatori</h3>
-                    <p>Fondi banca: <strong id="bankFunds">€ 2.450.000</strong></p>
-                    <p>Rischio: <span class="warn" id="risk">MEDIO</span></p>
-                    <p>Attenzione IA: <span class="ok" id="ia">NORMALE</span></p>
-                </div>
-
-                <div class="chat">
-                    <div class="chat-header">Assistente interno</div>
-                    <div class="chat-body" id="chat-body">
-                        <div class="msg robot">Sistema operativo avviato.</div>
-                    </div>
-                    <div class="chat-input">
-                        <textarea id="chat-input" placeholder="Scrivi..." rows="1"></textarea>
-                        <button id="send-btn">Invia</button>
-                    </div>
-
-                    <!-- SLOT IMMAGINE -->
-                    <div class="image-slot" id="image-slot">
-                        <img src="banca.png" alt="immagine" style="width:100%; height:100%; object-fit:cover;">
-                    </div>
-                </div>
-
-            </aside>
+    <header class="topbar">
+        <div class="logo">BANCA CENTRALE</div>
+        <div class="session">
+            Operatore: <strong>#0472</strong> • Stato: <span class="ok">ATTIVO</span>
         </div>
+        <div class="clock">
+            <button id="endGameBtn" class="end-btn">FINE</button>
+        </div>
+    </header>
 
-        <!-- AZIONI -->
-        <footer class="actions">
-            <button class="approve">APPROVA</button>
-            <button class="archive">ARCHIVIA</button>
-            <button class="report">SEGNALA</button>
-        </footer>
+    <div class="main">
+        <aside class="mailbox">
+            <h2>Posta</h2>
+            <ul id="mailList"></ul>
 
+            <hr>
+
+            <h2>Storico procedure</h2>
+            <ul id="historyList" class="history"></ul>
+        </aside>
+
+        <section class="document">
+            <div class="doc-header">
+                <span id="docProtocol">—</span>
+            </div>
+
+            <div class="doc-body" id="docBody">
+                Seleziona una mail per leggerne il contenuto.
+            </div>
+        </section>
+
+        <aside class="right-panel">
+            <div class="stats">
+                <h3>Indicatori</h3>
+                <p>Fondi banca: <strong id="bankFunds">€ 0</strong></p>
+            </div>
+
+            <div class="chat">
+                <div class="chat-header">Assistente interno</div>
+                <div class="chat-body" id="chat-body"></div>
+                <div class="chat-input">
+                    <textarea id="chat-input" placeholder="Scrivi..."></textarea>
+                    <button id="send-btn">Invia</button>
+                </div>
+            </div>
+        </aside>
     </div>
 
-    <script src="app.js"></script>
+    <footer class="actions">
+        <button class="approve">APPROVA</button>
+        <button class="archive">ARCHIVIA</button>
+        <button class="report">SEGNALA</button>
+    </footer>
+</div>
+
+<!-- FINE GIOCO -->
+<div id="endGameModal" class="end-modal">
+    <div class="end-content">
+        <h2>Valutazione Operatore</h2>
+        <div id="endStats"></div>
+        <button onclick="closeEnd()">Chiudi</button>
+    </div>
+</div>
+
+<script src="app.js"></script>
 </body>
-
 </html>
-
-
