@@ -183,15 +183,26 @@ body {
     background: #000;
 }
 
-/* ==================== AGGIUNTE PER FINE ==================== */
+/* ==================== AGGIUNTE ==================== */
 
-/* Container pulsante FINE */
+/* LOGO SOTTO LA CHAT */
+.chat-logo {
+    text-align: center;
+    margin-top: 6px;
+}
+
+.chat-logo img {
+    width: 80px;
+    height: auto;
+    display: inline-block;
+}
+
+/* Pulsante FINE */
 .end-container {
     text-align: center;
     margin: 6px 0;
 }
 
-/* Pulsante FINE */
 .end-btn {
     padding: 6px 14px;
     font-size: 13px;
@@ -202,11 +213,11 @@ body {
     border-radius: 4px;
 }
 
-/* Modale finale sovrapposta */
+/* Modale finale */
 .end-modal {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0,0,0,0.9);
     display: none;
     align-items: center;
     justify-content: center;
